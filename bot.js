@@ -8,7 +8,7 @@ const SUPPORT_URL = 'https://t.me/moriwinhelpbot';
 const COMMUNITY_URL = 'https://t.me/moricoin_official';
 
 bot.start(async (ctx) => {
-  // Кнопка слева от поля ввода (menu button) -> Mini App
+  // 1) Ставим кнопку слева от поля ввода (menu button) -> Mini App
   await ctx.telegram.callApi('setChatMenuButton', {
     chat_id: ctx.chat.id,
     menu_button: {
@@ -16,14 +16,16 @@ bot.start(async (ctx) => {
       text: 'Open',
       web_app: { url: REF_URL },
     },
-  }); // setChatMenuButton — метод Bot API [web:19]
+  }); // setChatMenuButton [web:19]
 
+  // 2) Убираем reply-клавиатуру (если была раньше)
   const text =
     '<b>Спасибо, что присоединились к нам в проект!</b>\n' +
-    'Нажми кнопку ниже, чтобы открыть приложение или перейти в разделы.';
+    'Выберите действие:';
 
   await ctx.reply(text, {
     parse_mode: 'HTML',
+    ...Markup.removeKeyboard(), // remove custom reply keyboard [web:104]
     ...Markup.inlineKeyboard([
       [Markup.button.webApp('Открыть', REF_URL)],
       [Markup.button.url('Поддержка', SUPPORT_URL)],
